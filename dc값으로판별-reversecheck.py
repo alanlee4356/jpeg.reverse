@@ -1,7 +1,6 @@
 
 import itertools
 from math import ceil
-from signal import pause
 import time
 from bidict import bidict
 from unittest import result
