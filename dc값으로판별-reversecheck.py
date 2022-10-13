@@ -608,7 +608,7 @@ def arrange(encoded_bits):
                     except ValueError:
                         print('이 1010은 이전블록의 eob가 아니구만')
                 elif encoded_bits[index:index+4] == '0101':
-                    try :
+                    try :#'0101  11101001110011010 이 디코딩이 잘되는 문제'
                         tmp,remain_tmp=decode_dc_huffman(encoded_bits[index+4:end])
                         decode_ac_huffman(remain_tmp)
                         print('이 0101은 이전블록의 eob구만')
@@ -731,7 +731,7 @@ rnd = list(randombits)
 diffmax = 0
 dc_diff = []  # type: List[int]
 dcval = []
-
+lengths = []
 
 for i in range(0, 512, 8):#플립 인코딩
     for j in range(0, 512, 8):
@@ -742,8 +742,12 @@ for i in range(0, 512, 8):#플립 인코딩
             else:
                 encoded_bits += encoding(a1)
         else:
+            lengths.append(len(encoding(a1)))
             encoded_bits += encoding(a1)
 
+# plt.hist(lengths,bins=30)
+# print(len(encoded_bits)/4096)
+# plt.show()
 
 # for i in range(0, 512, 8):  # normal인코딩
 #     for j in range(0, 512, 8):

@@ -625,7 +625,7 @@ pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
 arr = d1_to_d2(pixel_values, 512, 512)
 arr1 = np.zeros((512, 512), np.uint8)
 encoded_bits = ''
-randombits = '1010'
+randombits = ''
 rnd = list(randombits)
 
 
@@ -648,18 +648,23 @@ rnd = list(randombits)
 #     if encoded_bits =='':
 #             break
 
-
+lengths=[]
 for i in range(0, 512, 8):#플립 인코딩
     for j in range(0, 512, 8):
         a1 = arr[i:i+8, j:j+8]
         if len(rnd) > int(512*(i/8)+(j/8)):
             if rnd[int(512*(i/8)+(j/8))]=='1':
+                
                 encoded_bits += flip(encoding(a1))
             else:
+                
                 encoded_bits += encoding(a1)
         else:
+            lengths.append(len(encoding(a1)))
             encoded_bits += encoding(a1)
-
+plt.hist(lengths,bins=30)
+print(len(encoded_bits)/4096)
+plt.show()
 error = False
 length = ceil(len(encoded_bits)/4096)
 for i in range(0, 512, 8):#플립된 비트 디코딩 평균비트수
