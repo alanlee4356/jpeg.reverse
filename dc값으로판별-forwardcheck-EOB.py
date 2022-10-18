@@ -542,6 +542,7 @@ def decode_ac_huffman(bit_seq):
                     keys.append(key)
                     return keys, bit_seq[current_idx+4:]
                 #여기에 뒤집어진 eob 넣어놓는거 수정하면 될듯?
+                
                 else:
                     temp = (run, HUFFMAN_CATEGORIES[size][diff_value(
                         current_idx + len(current_slice),
@@ -551,6 +552,9 @@ def decode_ac_huffman(bit_seq):
 
                 current_idx += len(current_slice) + size
                 break
+            elif current_slice =='0101':
+                keys.append(EOB)
+                return keys, bit_seq[current_idx+4:]
             current_slice = current_slice[:-1]
         else:
             raise KeyError(
@@ -610,7 +614,7 @@ def arrange1(encoded_bits):
 
 
 
-def arrange(encoded_bits):
+def arrange(encoded_bits):#forward check
     index = len(encoded_bits)-4
     end = len(encoded_bits)
     while True:
@@ -750,7 +754,7 @@ pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
 arr = d1_to_d2(pixel_values, 512, 512)
 arr1 = np.zeros((512, 512), np.uint8)
 encoded_bits = ''
-randombits = '11'
+randombits = ''
 rnd = list(randombits)
 diffmax = 0
 dc_diff = []  # type: List[int]
@@ -778,7 +782,7 @@ for i in range(0, 512, 8):#플립 인코딩
 #         a1 = arr[i:i+8, j:j+8]
 #         encoded_bits += encoding(a1)
 
-arrange(encoded_bits)
+#arrange(encoded_bits)
 
 
 for i in range(0, 512, 8):  # normal 디코딩
