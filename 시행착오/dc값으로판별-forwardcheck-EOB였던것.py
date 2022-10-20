@@ -541,6 +541,8 @@ def decode_ac_huffman(bit_seq):
                 elif key == EOB:
                     keys.append(key)
                     return keys, bit_seq[current_idx+4:]
+                #여기에 뒤집어진 eob 넣어놓는거 수정하면 될듯?
+                
                 else:
                     temp = (run, HUFFMAN_CATEGORIES[size][diff_value(
                         current_idx + len(current_slice),
@@ -550,9 +552,9 @@ def decode_ac_huffman(bit_seq):
 
                 current_idx += len(current_slice) + size
                 break
-            elif current_slice =='0101':
-                keys.append(EOB)
-                return keys, bit_seq[current_idx+4:]
+            # elif current_slice =='0101':
+            #     keys.append(EOB)
+            #     return keys, bit_seq[current_idx+4:]
             current_slice = current_slice[:-1]
         else:
             raise KeyError(
@@ -602,8 +604,17 @@ def replace(encoded_bits, replace_bits, start, length):  # 원본, 변경할비�
         encoded[start+i] = replaced[i]
     encoded_bits = ''.join(encoded)
     return encoded_bits
+def arrange1(encoded_bits):
+    #앞에서부터
+    #dc디코딩 진행
+    #ac디코딩 진행중 딱떨어지는 1010이 나오면 eob
+    #ac디코딩 진행중 딱떨어지는 0101이 나오면 eob(추정)//ac디코딩쪽을 수정해야할듯
+    return encoded_bits
 
-def arrange(encoded_bits):
+
+
+
+def arrange(encoded_bits):#forward check
     index = len(encoded_bits)-4
     end = len(encoded_bits)
     while True:
@@ -780,10 +791,10 @@ for i in range(0, 512, 8):  # normal 디코딩
         a17, encoded_bits = decoding(encoded_bits)
 
         arr1[i:i+8, j:j+8] = a17
-        # print(i, j)
-        # print(a17)
+        print(i, j)
+        print(a17)
 
-        # print(pixel_diff(arr1[i:i+8, j:j+8]))
+        print(pixel_diff(arr1[i:i+8, j:j+8]))
         if pixel_diff(arr1[i:i+8, j:j+8]) > diffmax:
             diffmax = pixel_diff(arr1[i:i+8, j:j+8])
 

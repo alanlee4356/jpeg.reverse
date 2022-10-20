@@ -740,7 +740,7 @@ pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
 arr = d1_to_d2(pixel_values, 512, 512)
 arr1 = np.zeros((512, 512), np.uint8)
 encoded_bits = ''
-randombits = '11'
+randombits = ''
 rnd = list(randombits)
 diffmax = 0
 dc_diff = []  # type: List[int]
@@ -768,7 +768,7 @@ for i in range(0, 512, 8):#플립 인코딩
 #         a1 = arr[i:i+8, j:j+8]
 #         encoded_bits += encoding(a1)
 
-arrange(encoded_bits)
+#arrange(encoded_bits)
 
 
 for i in range(0, 512, 8):  # normal 디코딩
