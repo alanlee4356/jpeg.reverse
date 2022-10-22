@@ -752,6 +752,8 @@ dcval = []
 lengths = []
 RMCount = []
 
+RMProb = []
+
 for i in range(0, 512, 8):#플립 인코딩
     for j in range(0, 512, 8):
         a1 = arr[i:i+8, j:j+8]
@@ -832,9 +834,14 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 # encoded_bits 평균비트수 175.36 176비트 단위로 플립해봐야할듯
 
 for i in range(30):#AC Run Magnitude 갯수 세보는것
+    RMProb.append(RMCount.count(i)/4096)
     print(RMCount.count(i))
 
 plt.hist(RMCount,bins=23)
+
+
+
+
 plt.show()
 
 newimg = Image.fromarray(arr1)
