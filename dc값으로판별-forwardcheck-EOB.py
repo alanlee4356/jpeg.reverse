@@ -838,7 +838,7 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 for i in range(30):#AC Run Magnitude 갯수 세보는것
     rmcount.append(rm.count(i))
 
-plt.hist(rm,bins=23)
+plt.hist(rm,bins=23)#
 plt.show()
 
 newimg = Image.fromarray(arr1)
