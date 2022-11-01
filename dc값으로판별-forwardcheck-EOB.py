@@ -725,7 +725,7 @@ def decoding(a10):  # reverse decoding
     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
     dcvalue(a11)
     a12, remain_bits = decode_ac_huffman(remain_bits)
-    rm.append(len(a12))
+    rm1.append(len(a12))
     a13 = decode_run_length(a12)
     a13[0] = decode_differential(dcval)
     a14 = izigzag(a13)
@@ -751,7 +751,8 @@ diffmax = 0
 dc_diff = []  # type: List[int]
 dcval = []
 lengths = []
-rm = []
+rm = []#run magnitude (run,length)
+rm1 = []
 rmcount = []
 
 
