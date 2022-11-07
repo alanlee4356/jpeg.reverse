@@ -703,6 +703,8 @@ def encoding(a1):
     a7 = encode_dc_huffman(size, value)
     a8 = encode_run_length(tuple(a5)[1:])
     a9 = encode_ac_huffman(a8)
+    if len(a8)==23:
+        print(i,j)
     rm.append(len(a8))
     a10 = a7+a9
     return a10
