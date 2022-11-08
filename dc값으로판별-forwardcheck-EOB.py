@@ -703,8 +703,8 @@ def encoding(a1):
     a7 = encode_dc_huffman(size, value)
     a8 = encode_run_length(tuple(a5)[1:])
     a9 = encode_ac_huffman(a8)
-    if len(a8)==23:
-        print(i,j)
+    if len(a8)>1:
+        rm1.append(a8[len(a8)-2])
     rm.append(len(a8))
     a10 = a7+a9
     return a10
@@ -727,7 +727,7 @@ def decoding(a10):  # reverse decoding
     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
     dcvalue(a11)
     a12, remain_bits = decode_ac_huffman(remain_bits)
-    rm1.append(len(a12))
+    # rm1.append(len(a12))
     a13 = decode_run_length(a12)
     a13[0] = decode_differential(dcval)
     a14 = izigzag(a13)
@@ -838,10 +838,13 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 """
 # encoded_bits 평균비트수 175.36 176비트 단위로 플립해봐야할듯
 
-for i in range(30):#AC Run Magnitude 갯수 세보는것
-    rmcount.append(rm.count(i))
-
-plt.hist(rm,bins=23)#
+# for i in range(30):#AC Run Magnitude 갯수 세보는것
+#     rmcount.append(rm.count(i))
+# 
+# plt.hist(rm,bins=23)
+# plt.show()
+x,y = zip(rm1[:])#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
+plt.scatter(rm1[:][0],rm1[:][1])
 plt.show()
 
 newimg = Image.fromarray(arr1)
