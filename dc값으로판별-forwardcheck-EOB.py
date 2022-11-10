@@ -703,7 +703,7 @@ def encoding(a1):
     a7 = encode_dc_huffman(size, value)
     a8 = encode_run_length(tuple(a5)[1:])
     a9 = encode_ac_huffman(a8)
-    if len(a8)>1:
+    if len(a8)>22:
         rm1.append(a8[len(a8)-2])
     rm.append(len(a8))
     a10 = a7+a9
@@ -843,8 +843,9 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 # 
 # plt.hist(rm,bins=23)
 # plt.show()
-x,y = zip(rm1[:])#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
-plt.scatter(rm1[:][0],rm1[:][1])
+tuple(rm1)
+run,mag = zip(*rm1)#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
+plt.scatter(run,mag)
 plt.show()
 
 newimg = Image.fromarray(arr1)
