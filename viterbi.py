@@ -29,6 +29,7 @@ TRANSITION_P ={
 #https://hipgyung.tistory.com/entry/HMM-Viterbi-%EB%B9%84%ED%84%B0%EB%B9%84-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%BD%94%EB%93%9C
 
 
+
 line_nodes = [0,1,1,2,2,3] #n+1번째 라인의 경우의수 n+1은 n+1~n+2사이 
 line_num = 0
 value_nodes = [0,3,4,[2,3],[3,4],[5,6,7]] #n번째 라인마다의 확률값 리스트 안에 리스트 넣기
