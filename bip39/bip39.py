@@ -1,6 +1,7 @@
 import string
 import re
 from bidict import bidict
+import random
 
 HUFFMAN_CATEGORY_CODEWORD = bidict(
     {
@@ -38,7 +39,7 @@ HUFFMAN_CATEGORY_CODEWORD = bidict(
 def countalp(data):
     for chr in data:
 
-        if chr is not '\n':
+        if chr != '\n':
             if chr in alp:
 
                 alp[chr] += 1
@@ -48,13 +49,45 @@ def countalp(data):
 
                 alp[chr]= 1
 
+def encode_huffman(sampleList):
+    bits = ''
+    for word in sampleList:
+        for i in word:
+            bits+= HUFFMAN_CATEGORY_CODEWORD[i]
+    return bits
+
+def flip(arr):
+    arr1 = list(arr)
+    for i in range(len(arr1)):
+        if arr1[i] == '1':
+            arr1[i] = '0'
+        elif arr1[i] == '0':
+            arr1[i] = '1'
+    
+    arr = ''.join(arr1)
+    return arr
 
 f = open("bip39/bip39words.txt", 'r+') # file 읽기
-data = f.read()
+data = f.read()                   
+encoded_bits = ''
+flipped_bits = ''
+
+wordList = data.split()
+# sampleList = random.sample(wordList, 100)
+sampleList = wordList[0:100]
+
+encoded_bits = encode_huffman(sampleList)
+
+for i in range (0,int(len(encoded_bits)/100),1):
+    flipped_bits +=flip(encoded_bits[i*100:i*100+100])
 
 
-# wordlist = data.split()
-# print(wordlist)
+    
+
+
+
+
+
 
 alp = {}#alphabet
 
