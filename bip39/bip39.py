@@ -56,6 +56,30 @@ def encode_huffman(sampleList):
             bits+= HUFFMAN_CATEGORY_CODEWORD[i]
     return bits
 
+def decode_huffman(bit_seq):
+    def diff_value(idx, size):
+        if idx >= len(bit_seq) or idx + size > len(bit_seq):
+            raise IndexError('There is not enough bits to decode DIFF value '
+                             'codeword.')
+        fixed = bit_seq[idx:idx + size]
+        return int(fixed, 2)
+    current_idx = 0
+    while current_idx < len(bit_seq):
+        remaining_len = len(bit_seq) - current_idx
+        current_slice = bit_seq[
+            current_idx:
+            current_idx + (8 if remaining_len > 8 else remaining_len)
+        ]
+        err_cache = current_slice
+        while current_slice:
+            if (current_slice in HUFFMAN_CATEGORY_CODEWORD.inv):
+                key = (HUFFMAN_CATEGORY_CODEWORD.inv[current_slice])
+                size = len(current_slice)
+                
+                return key,bit_seq[len(current_slice):]
+            
+            current_slice = current_slice[:-1]
+
 def flip(arr):
     arr1 = list(arr)
     for i in range(len(arr1)):
@@ -77,6 +101,9 @@ wordList = data.split()
 sampleList = wordList[0:100]
 
 encoded_bits = encode_huffman(sampleList)
+def decoding():
+    while True:
+        word,remain_bits = decode_huffman(encoded_bits)
 
 for i in range (0,int(len(encoded_bits)/100),1):
     flipped_bits +=flip(encoded_bits[i*100:i*100+100])
