@@ -2,6 +2,7 @@ import string
 import re
 from bidict import bidict
 import random
+import math
 
 HUFFMAN_CATEGORY_CODEWORD = bidict(
     {
@@ -56,7 +57,7 @@ def encode_huffman(sampleList):
             bits+= HUFFMAN_CATEGORY_CODEWORD[i]
     return bits
 
-def decode_huffman(bit_seq):
+def decode_huffman(bit_seq):#철자하나씩 디코딩하는데 단어의 시작과끝을 구분못함 스페이스바나 개행문자를 문자의끝으로 인식시켜야할듯
     def diff_value(idx, size):
         if idx >= len(bit_seq) or idx + size > len(bit_seq):
             raise IndexError('There is not enough bits to decode DIFF value '
@@ -70,15 +71,22 @@ def decode_huffman(bit_seq):
             current_idx:
             current_idx + (8 if remaining_len > 8 else remaining_len)
         ]
-        err_cache = current_slice
+        
         while current_slice:
             if (current_slice in HUFFMAN_CATEGORY_CODEWORD.inv):
                 key = (HUFFMAN_CATEGORY_CODEWORD.inv[current_slice])
-                size = len(current_slice)
                 
                 return key,bit_seq[len(current_slice):]
             
             current_slice = current_slice[:-1]
+
+def decoding(remain_bits):
+    while True:
+        word,remain_bits = decode_huffman(remain_bits)
+        decoded_words.append(word)
+        if len(remain_bits) == 0:
+            break
+    return decoded_words
 
 def flip(arr):
     arr1 = list(arr)
@@ -95,18 +103,22 @@ f = open("bip39/bip39words.txt", 'r+') # file 읽기
 data = f.read()                   
 encoded_bits = ''
 flipped_bits = ''
+decoded_words =[]
 
 wordList = data.split()
 # sampleList = random.sample(wordList, 100)
-sampleList = wordList[0:100]
+sampleList = wordList[0:10]
 
 encoded_bits = encode_huffman(sampleList)
-def decoding():
-    while True:
-        word,remain_bits = decode_huffman(encoded_bits)
 
-for i in range (0,int(len(encoded_bits)/100),1):
-    flipped_bits +=flip(encoded_bits[i*100:i*100+100])
+
+
+for i in range (0,int(math.ceil(len(encoded_bits)/10)),1):
+    flipped_bits +=flip(encoded_bits[i*10:i*10+10])
+    
+decoding(encoded_bits)
+decoding(flipped_bits)#flip된거 디코딩하면 비트가 남는데 그러면 되돌아가서 플립해야함 결국엔 jpeg랑 다를게없음.
+
 
 
     
