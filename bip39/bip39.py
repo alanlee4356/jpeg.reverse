@@ -50,20 +50,31 @@ def countalp(data):
 
                 alp[chr]= 1
 
-def encode_huffman(sampleList):
+def encode_huffman(sampleList):#11000001
     bits = ''
     for word in sampleList:
         for i in word:
             bits+= HUFFMAN_CATEGORY_CODEWORD[i]
     return bits
 
-def decode_huffman(bit_seq):#철자하나씩 디코딩하는데 단어의 시작과끝을 구분못함 스페이스바나 개행문자를 문자의끝으로 인식시켜야할듯
-    def diff_value(idx, size):
-        if idx >= len(bit_seq) or idx + size > len(bit_seq):
-            raise IndexError('There is not enough bits to decode DIFF value '
-                             'codeword.')
-        fixed = bit_seq[idx:idx + size]
-        return int(fixed, 2)
+def decode_huffman123(bit_seq):#철자하나씩 디코딩하는데 단어의 시작과끝을 구분못함 스페이스바나 개행문자를 문자의끝으로 인식시켜야할듯
+    
+    current_idx = 0
+    while current_idx < len(bit_seq):
+        remaining_len = len(bit_seq) - current_idx
+        
+        current_slice = bit_seq[-(8 if remaining_len > 8 else remaining_len):]
+        
+        while current_slice:
+            if (current_slice in HUFFMAN_CATEGORY_CODEWORD.inv):
+                key = (HUFFMAN_CATEGORY_CODEWORD.inv[current_slice])
+                
+                return key,bit_seq[:-len(current_slice)]
+            
+            current_slice = current_slice[1:]
+
+def decode_huffman(bit_seq):#기존꺼
+    
     current_idx = 0
     while current_idx < len(bit_seq):
         remaining_len = len(bit_seq) - current_idx
@@ -71,6 +82,8 @@ def decode_huffman(bit_seq):#철자하나씩 디코딩하는데 단어의 시작
             current_idx:
             current_idx + (8 if remaining_len > 8 else remaining_len)
         ]
+        #current_slice = bit_seq[
+        # -(8 if remaining_len > 8 else remaining_len):]
         
         while current_slice:
             if (current_slice in HUFFMAN_CATEGORY_CODEWORD.inv):
@@ -107,13 +120,13 @@ decoded_words =[]
 
 wordList = data.split()
 # sampleList = random.sample(wordList, 100)
-sampleList = wordList[0:10]
+sampleList = wordList[0:1]
 
 encoded_bits = encode_huffman(sampleList)
 
 
 
-for i in range (0,int(math.ceil(len(encoded_bits)/10)),1):
+for i in range (0,int(math.ceil(len(encoded_bits)/10)),1):#여기서 숫자는 flip할 길이
     flipped_bits +=flip(encoded_bits[i*10:i*10+10])
     
 decoding(encoded_bits)
