@@ -504,6 +504,101 @@ def encode_ac_huffman(run_length):
     return acbits
 
 
+# def decode_ac_huffman(bit_seq,i,j):
+    global k,l
+    def diff_value(idx, size):
+        if idx >= len(bit_seq) or idx + size > len(bit_seq):
+            raise IndexError('There is not enough bits to decode DIFF value '
+                             'codeword.')
+        fixed = bit_seq[idx:idx + size]
+        return int(fixed, 2)
+
+    keys = []
+    current_idx = 0
+    while current_idx < len(bit_seq):
+        #   1. Consume next 16 bits as `current_slice`.
+        #   2. Try to find the `current_slice` in Huffman table.
+        #   3. If found, yield the corresponding key and go to step 4.
+        #      Otherwise, remove the last element in `current_slice` and go to
+        #      step 2.
+        #   4. Consume next n bits, where n is the category (size) in returned
+        #      key yielded in step 3. Use those info to decode the data.          
+        remaining_len = len(bit_seq) - current_idx
+        current_slice = bit_seq[
+            current_idx:
+            current_idx + (16 if remaining_len > 16 else remaining_len)
+        ]
+        err_cache = current_slice
+        if len(keys)>=21:
+            if current_slice[0:4] == '1111':
+                if i not in istack:
+                    if j not in istack:
+                        istack.append(i)
+                        jstack.append(j)
+                        rstack.append(remaining_len)
+                        temppp=check(check_bits[-remaining_len+4:],istack[-1],jstack[-1])
+                        print(temppp)
+            elif len(keys)>23:
+                print('error')
+                if istack.index(i) == jstack.index(j):
+                    tempp = istack.index(i)
+                elif istack.index(i) < jstack.index(j):
+                    tempp = jstack.index(j)
+                replace(check_bits[-rstack[tempp]:-rstack[tempp]+4],'1010',0,4)
+                break 
+                   
+                
+                # if k ==0 and l==0:
+                #     kstack.append(i)
+                #     lstack.append(j)
+                # else:
+                #     kstack.append(k)
+                #     lstack.append(l)
+                # if check(check_bits[-remaining_len+4:],kstack[-1],lstack[-1]) == 0:#check했을때 남은비트없이 깔끔하면 
+                #     kstack.pop(-1)
+                #     lstack.pop(-1)
+                #     k = kstack[-1]
+                #     l = lstack[-1]
+                #     keys.append((0,0))
+                #     return keys, bit_seq[current_idx+4:]
+                # else:
+                #     kstack.pop(-1)
+                #     lstack.pop(-1)
+                #     k = kstack[-1]
+                #     l = lstack[-1]
+                #check했을때 남은비트가 있으면 그냥 다음줄로 진행
+                    
+        while current_slice:
+            if (current_slice in
+                    HUFFMAN_CATEGORY_CODEWORD[AC].inv):
+                key = (HUFFMAN_CATEGORY_CODEWORD[AC].inv[current_slice])
+
+                # AC
+                run, size = key
+                if key == ZRL:
+                    keys.append(key)
+                elif key == EOB:
+                    keys.append(key)
+                    return keys, bit_seq[current_idx+4:]
+                else:
+                    temp = (run, HUFFMAN_CATEGORIES[size][diff_value(
+                        current_idx + len(current_slice),
+                        size
+                    )])
+                    keys.append(temp)
+
+                current_idx += len(current_slice) + size
+                break
+            # elif current_slice =='0101':
+            #     keys.append(EOB)
+            #     return keys, bit_seq[current_idx+4:]
+            current_slice = current_slice[:-1]
+        else:
+            raise KeyError(
+                f'Cannot find any prefix of {err_cache} in Huffman table.'
+            )
+    return keys
+
 def decode_ac_huffman(bit_seq):
 
     def diff_value(idx, size):
@@ -541,8 +636,63 @@ def decode_ac_huffman(bit_seq):
                 elif key == EOB:
                     keys.append(key)
                     return keys, bit_seq[current_idx+4:]
-                #여기에 뒤집어진 eob 넣어놓는거 수정하면 될듯?
-                
+                else:
+                    temp = (run, HUFFMAN_CATEGORIES[size][diff_value(
+                        current_idx + len(current_slice),
+                        size
+                    )])
+                    keys.append(temp)
+
+                current_idx += len(current_slice) + size
+                break
+            current_slice = current_slice[:-1]
+        else:
+            raise KeyError(
+                f'Cannot find any prefix of {err_cache} in Huffman table.'
+            )
+    return keys
+
+
+def check_ac_huffman(bit_seq):
+
+    def diff_value(idx, size):
+        if idx >= len(bit_seq) or idx + size > len(bit_seq):
+            raise IndexError('There is not enough bits to decode DIFF value '
+                             'codeword.')
+        fixed = bit_seq[idx:idx + size]
+        return int(fixed, 2)
+
+    keys = []
+    current_idx = 0
+    while current_idx < len(bit_seq):
+        #   1. Consume next 16 bits as `current_slice`.
+        #   2. Try to find the `current_slice` in Huffman table.
+        #   3. If found, yield the corresponding key and go to step 4.
+        #      Otherwise, remove the last element in `current_slice` and go to
+        #      step 2.
+        #   4. Consume next n bits, where n is the category (size) in returned
+        #      key yielded in step 3. Use those info to decode the data.          
+        remaining_len = len(bit_seq) - current_idx
+        current_slice = bit_seq[
+            current_idx:
+            current_idx + (16 if remaining_len > 16 else remaining_len)
+        ]
+        err_cache = current_slice
+        
+        
+                    
+        while current_slice:
+            if (current_slice in
+                    HUFFMAN_CATEGORY_CODEWORD[AC].inv):
+                key = (HUFFMAN_CATEGORY_CODEWORD[AC].inv[current_slice])
+
+                # AC
+                run, size = key
+                if key == ZRL:
+                    keys.append(key)
+                elif key == EOB:
+                    keys.append(key)
+                    return keys, bit_seq[current_idx+4:]
                 else:
                     temp = (run, HUFFMAN_CATEGORIES[size][diff_value(
                         current_idx + len(current_slice),
@@ -571,20 +721,9 @@ def d1_to_d2(pixel_values, row, col):
     return d2
 
 
-def flip(arr):
+def flip(arr):# 1111을 1010으로 만들기
     arr1 = list(arr)
     for i in range(len(arr1)):
-        if arr1[i] == '1':
-            arr1[i] = '0'
-        elif arr1[i] == '0':
-            arr1[i] = '1'
-
-    arr = ''.join(arr1)
-    return arr
-
-def eobflip(arr):
-    arr1 = list(arr)
-    for i in range(-1,-5,-1):
         if arr1[i] == '1':
             arr1[i] = '0'
         elif arr1[i] == '0':
@@ -592,6 +731,30 @@ def eobflip(arr):
     
     arr = ''.join(arr1)
     return arr
+
+def eobflip(arr):#1010을 1111로 만들기
+    arr1 = list(arr)
+    for i in range(-1,-5,-1):
+        # if arr1[i] == '1':
+        #     arr1[i] = '0'
+        # elif arr1[i] == '0':
+        #     arr1[i] = '1'
+        if arr1[i] == '0':
+            arr1[i] = '1'
+    
+    arr = ''.join(arr1)
+    return arr
+
+def eobflip1(arr):
+    arr1 = list(arr)
+    for i in range(-1,-5,-2):
+        
+        if arr1[i] == '1':
+            arr1[i] = '0'
+    
+    arr = ''.join(arr1)
+    return arr
+
     
         
 
@@ -604,17 +767,8 @@ def replace(encoded_bits, replace_bits, start, length):  # 원본, 변경할비�
         encoded[start+i] = replaced[i]
     encoded_bits = ''.join(encoded)
     return encoded_bits
-def arrange1(encoded_bits):
-    #앞에서부터
-    #dc디코딩 진행
-    #ac디코딩 진행중 딱떨어지는 1010이 나오면 eob
-    #ac디코딩 진행중 딱떨어지는 0101이 나오면 eob(추정)//ac디코딩쪽을 수정해야할듯
-    return encoded_bits
 
-
-
-
-def arrange(encoded_bits):#forward check
+def arrange(encoded_bits):
     index = len(encoded_bits)-4
     end = len(encoded_bits)
     while True:
@@ -702,6 +856,39 @@ def dcvalue(a11):
     # dcval[1+64*int(i/8)+int(j/8)] = a17[0]
     dcval.append(a11)
 
+def check(check_bits1,n,m):
+    
+    for k in range(n,512,8):
+        for l in range(0,512,8):
+            if (k == n and l>=m+8)or k>n:
+                a11, check_bits1 = decode_dc_huffman(check_bits1)  # a11이 dc value
+                dcvalue(a11)
+                a12, check_bits1 = decode_ac_huffman(check_bits1,k,l)
+                a13 = decode_run_length(a12)
+                a13[0] = decode_differential(dcval)
+                a14 = izigzag(a13)
+                a15 = quantize(a14, True)
+                a16 = idct2d(a15)
+                a17 = after_idct(a16)
+    
+    
+    if len(check_bits1) == 0:
+        return 0
+    else :
+        return len(check_bits1)  
+            
+            
+            
+        
+        
+            
+            
+        
+        
+        
+    return len(check_bits1)
+
+    
 
 def encoding(a1):
 
@@ -714,8 +901,26 @@ def encoding(a1):
     a7 = encode_dc_huffman(size, value)
     a8 = encode_run_length(tuple(a5)[1:])
     a9 = encode_ac_huffman(a8)
+    # if len(a8)>21:
+    
+    rm.append(len(a8))
     a10 = a7+a9
     return a10
+
+# def checkencoding(a1):
+
+#     a2 = before_dct(a1)
+#     a3 = dct2d(a2)
+#     a4 = quantize(a3)
+#     a5 = zigzag(a4)
+#     encode_differential(a5[0])
+#     size, value = encode_dc(dc_diff[len(dc_diff)-1])
+#     a7 = encode_dc_huffman(size, value)
+#     a8 = encode_run_length(tuple(a5)[1:])
+#     a9 = encode_ac_huffman(a8)
+#     rm.append(len(a8))
+#     a10 = a7+a9
+#     return a10
 
 
 # def decoding(a10):  # normal
@@ -732,9 +937,14 @@ def encoding(a1):
 #     return a17, remain_bits
 
 def decoding(a10):  # reverse decoding
+    
     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
     dcvalue(a11)
-    a12, remain_bits = decode_ac_huffman(remain_bits)
+    try:
+        a12, remain_bits = decode_ac_huffman(remain_bits)
+    except ValueError:
+        print("1111로 가정한것이 틀렸음 변경된 비트로 다시 실행")
+    # rm1.append(len(a12))
     a13 = decode_run_length(a12)
     a13[0] = decode_differential(dcval)
     a14 = izigzag(a13)
@@ -750,28 +960,39 @@ filename = 'lena_gray.bmp'
 image = Image.open(filename, 'r')
 #image = img.imread(filename)
 pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
-
+k = 0
+l = 0
+istack = []
+jstack = []
+rstack = []
 arr = d1_to_d2(pixel_values, 512, 512)
 arr1 = np.zeros((512, 512), np.uint8)
 encoded_bits = ''
+check_bits = ''
 randombits = ''
 rnd = list(randombits)
 diffmax = 0
 dc_diff = []  # type: List[int]
 dcval = []
 lengths = []
+rm = []#run magnitude (run,length)
+rm1 = []
+rmcount = []
+
+
 
 for i in range(0, 512, 8):#플립 인코딩
     for j in range(0, 512, 8):
         a1 = arr[i:i+8, j:j+8]
-        if len(rnd) > int(512*(i/8)+(j/8)):
-            if rnd[int(512*(i/8)+(j/8))]=='1':
-                encoded_bits += eobflip(encoding(a1))
-            else:
-                encoded_bits += encoding(a1)
-        else:
+        # if len(rnd) > int(512*(i/8)+(j/8)):
+        #     if rnd[int(512*(i/8)+(j/8))]=='1':
+        #         encoded_bits += eobflip(encoding(a1))
+        #     else:
+        #         encoded_bits += encoding(a1)
+        # else:
             #lengths.append(len(encoding(a1)))
-            encoded_bits += encoding(a1)
+        encoded_bits += encoding(a1)
+        
 
 # plt.hist(lengths,bins=30)
 # print(len(encoded_bits)/4096)
@@ -783,6 +1004,7 @@ for i in range(0, 512, 8):#플립 인코딩
 #         encoded_bits += encoding(a1)
 
 #arrange(encoded_bits)
+check_bits = encoded_bits
 
 
 for i in range(0, 512, 8):  # normal 디코딩
@@ -791,12 +1013,12 @@ for i in range(0, 512, 8):  # normal 디코딩
         a17, encoded_bits = decoding(encoded_bits)
 
         arr1[i:i+8, j:j+8] = a17
-        print(i, j)
-        print(a17)
+        # print(i, j)
+        # print(a17)
 
-        print(pixel_diff(arr1[i:i+8, j:j+8]))
-        if pixel_diff(arr1[i:i+8, j:j+8]) > diffmax:
-            diffmax = pixel_diff(arr1[i:i+8, j:j+8])
+        # print(pixel_diff(arr1[i:i+8, j:j+8]))
+        # if pixel_diff(arr1[i:i+8, j:j+8]) > diffmax:
+        #     diffmax = pixel_diff(arr1[i:i+8, j:j+8])
 
         if encoded_bits == '':
             break
@@ -829,8 +1051,8 @@ for i in range(0, 512, 8):  # normal 디코딩
 # 8/26 디코드 런렝쓰 오류코드 -1 나오게 해서 위에꺼 실행할 예정
 
 
-plt.hist(list(itertools.accumulate(dcval)), bins=30, label="bins=30")
-plt.show()
+# plt.hist(list(itertools.accumulate(dcval)), bins=30, label="bins=30")
+# plt.show
 
 """
 이거 그냥 일반적으로 인코딩디코딩 하는거 테스트용으로 따로 만들어야할듯
@@ -840,6 +1062,15 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 """
 # encoded_bits 평균비트수 175.36 176비트 단위로 플립해봐야할듯
 
+for i in range(30):#AC Run Magnitude 갯수 세보는것
+    rmcount.append(rm.count(i))
+
+plt.hist(rm,bins=23)
+plt.show()
+tuple(rm1)
+run,mag = zip(*rm1)#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
+plt.scatter(run,mag)
+plt.show()
 
 newimg = Image.fromarray(arr1)
 plt.imshow(newimg, cmap=plt.cm.gray)  # 그레이스케일은 cmap=plt.cm.gray설정필요

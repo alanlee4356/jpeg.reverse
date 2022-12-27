@@ -504,7 +504,7 @@ def encode_ac_huffman(run_length):
     return acbits
 
 
-def decode_ac_huffman(bit_seq,i,j):
+def decode_ac_huffman(bit_seq):
     global k,l
     def diff_value(idx, size):
         if idx >= len(bit_seq) or idx + size > len(bit_seq):
@@ -874,29 +874,10 @@ def encoding(a1):
 #     return a10
 
 
-# def decoding(a10):  # normal
-#     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
-#     dcvalue(a11)
-#     a12, remain_bits = decode_ac_huffman(remain_bits)
-#     a13 = decode_run_length(a12)
-#     a13[0] = decode_differential(dcval)
-#     a14 = izigzag(a13)
-#     a15 = quantize(a14, True)
-#     a16 = idct2d(a15)
-#     a17 = after_idct(a16)
-
-#     return a17, remain_bits
-
-def decoding(a10):  # reverse decoding
-    if i ==504:
-        print(123)
+def decoding(a10):  # normal
     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
     dcvalue(a11)
-    try:
-        a12, remain_bits = decode_ac_huffman(remain_bits,i,j)
-    except ValueError:
-        print("1111로 가정한것이 틀렸음 변경된 비트로 다시 실행")
-    # rm1.append(len(a12))
+    a12, remain_bits = decode_ac_huffman(remain_bits)
     a13 = decode_run_length(a12)
     a13[0] = decode_differential(dcval)
     a14 = izigzag(a13)
@@ -905,6 +886,25 @@ def decoding(a10):  # reverse decoding
     a17 = after_idct(a16)
 
     return a17, remain_bits
+
+# def decoding(a10):  # reverse decoding
+#     if i ==504:
+#         print(123)
+#     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
+#     dcvalue(a11)
+#     try:
+#         a12, remain_bits = decode_ac_huffman(remain_bits,i,j)
+#     except ValueError:
+#         print("1111로 가정한것이 틀렸음 변경된 비트로 다시 실행")
+#     # rm1.append(len(a12))
+#     a13 = decode_run_length(a12)
+#     a13[0] = decode_differential(dcval)
+#     a14 = izigzag(a13)
+#     a15 = quantize(a14, True)
+#     a16 = idct2d(a15)
+#     a17 = after_idct(a16)
+
+#     return a17, remain_bits
 
 filename = 'lena_gray.bmp'
 

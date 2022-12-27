@@ -815,8 +815,8 @@ for i in range(0, 512, 8):  # normal 디코딩
 # 8/26 디코드 런렝쓰 오류코드 -1 나오게 해서 위에꺼 실행할 예정
 
 
-# plt.hist(list(itertools.accumulate(dcval)), bins=30, label="bins=30")
-# plt.show
+plt.hist(list(itertools.accumulate(dcval)), bins=30, label="bins=30")
+plt.show()
 
 """
 이거 그냥 일반적으로 인코딩디코딩 하는거 테스트용으로 따로 만들어야할듯
