@@ -858,8 +858,8 @@ def dcvalue(a11):
 
 def check(check_bits1,n,m):
     
-    for k in range(n,512,8):
-        for l in range(0,512,8):
+    for k in range(n,img_size,8):
+        for l in range(0,img_size,8):
             if (k == n and l>=m+8)or k>n:
                 a11, check_bits1 = decode_dc_huffman(check_bits1)  # a11이 dc value
                 dcvalue(a11)
@@ -954,19 +954,20 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = 'lena_gray.bmp'
+filename = 'Baboon.bmp'
 
 
 image = Image.open(filename, 'r')
 #image = img.imread(filename)
 pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
+img_size = 512
 k = 0
 l = 0
 istack = []
 jstack = []
 rstack = []
-arr = d1_to_d2(pixel_values, 512, 512)
-arr1 = np.zeros((512, 512), np.uint8)
+arr = d1_to_d2(pixel_values, img_size, img_size)
+arr1 = np.zeros((img_size, img_size), np.uint8)
 encoded_bits = ''
 check_bits = ''
 randombits = ''
@@ -981,34 +982,34 @@ rmcount = []
 
 
 
-for i in range(0, 512, 8):#플립 인코딩
-    for j in range(0, 512, 8):
-        a1 = arr[i:i+8, j:j+8]
-        # if len(rnd) > int(512*(i/8)+(j/8)):
-        #     if rnd[int(512*(i/8)+(j/8))]=='1':
-        #         encoded_bits += eobflip(encoding(a1))
-        #     else:
-        #         encoded_bits += encoding(a1)
-        # else:
-            #lengths.append(len(encoding(a1)))
-        encoded_bits += encoding(a1)
+# for i in range(0, img_size, 8):#플립 인코딩
+#     for j in range(0, img_size, 8):
+#         a1 = arr[i:i+8, j:j+8]
+#         # if len(rnd) > int(img_size*(i/8)+(j/8)):
+#         #     if rnd[int(img_size*(i/8)+(j/8))]=='1':
+#         #         encoded_bits += eobflip(encoding(a1))
+#         #     else:
+#         #         encoded_bits += encoding(a1)
+#         # else:
+#             #lengths.append(len(encoding(a1)))
+#         encoded_bits += encoding(a1)
         
 
 # plt.hist(lengths,bins=30)
 # print(len(encoded_bits)/4096)
 # plt.show()
 
-# for i in range(0, 512, 8):  # normal인코딩
-#     for j in range(0, 512, 8):
-#         a1 = arr[i:i+8, j:j+8]
-#         encoded_bits += encoding(a1)
+for i in range(0, img_size, 8):  # normal인코딩
+    for j in range(0, img_size, 8):
+        a1 = arr[i:i+8, j:j+8]
+        encoded_bits += encoding(a1)
 
 #arrange(encoded_bits)
-check_bits = encoded_bits
+# check_bits = encoded_bits
 
 
-for i in range(0, 512, 8):  # normal 디코딩
-    for j in range(0, 512, 8):
+for i in range(0, img_size, 8):  # normal 디코딩
+    for j in range(0, img_size, 8):
 
         a17, encoded_bits = decoding(encoded_bits)
 
@@ -1062,15 +1063,15 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 """
 # encoded_bits 평균비트수 175.36 176비트 단위로 플립해봐야할듯
 
-for i in range(30):#AC Run Magnitude 갯수 세보는것
+for i in range(63):#AC Run Magnitude 갯수 세보는것
     rmcount.append(rm.count(i))
 
 plt.hist(rm,bins=23)
 plt.show()
-tuple(rm1)
-run,mag = zip(*rm1)#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
-plt.scatter(run,mag)
-plt.show()
+# tuple(rm1)
+# run,mag = zip(*rm1)#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
+# plt.scatter(run,mag)
+# plt.show()
 
 newimg = Image.fromarray(arr1)
 plt.imshow(newimg, cmap=plt.cm.gray)  # 그레이스케일은 cmap=plt.cm.gray설정필요
