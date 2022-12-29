@@ -954,7 +954,8 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/1.1.01.tiff'
+# filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/1.1.01.tiff'
+filename = '1.gif'
 
 
 image = Image.open(filename, 'r')
