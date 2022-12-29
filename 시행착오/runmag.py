@@ -1,4 +1,4 @@
-
+import csv
 import itertools
 from math import ceil
 import time
@@ -1078,6 +1078,13 @@ newimg = Image.fromarray(arr1)
 plt.imshow(newimg, cmap=plt.cm.gray)  # 그레이스케일은 cmap=plt.cm.gray설정필요
 
 plt.show()
+
+f = open('write.csv','w', newline='')
+wr = csv.writer(f)
+for i in range(0,len(rmcount)):
+    wr.writerow([i,rmcount[i]])
+    
+f.close
 
 
 '''
