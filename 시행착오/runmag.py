@@ -954,7 +954,7 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/49.gif'
+filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/usc sipi/img1024/7.2.01.tiff'
 # filename = '1.gif'
 
 
@@ -1081,7 +1081,7 @@ plt.imshow(newimg, cmap=plt.cm.gray)  # 그레이스케일은 cmap=plt.cm.gray�
 plt.show()
 
 # f = open('write/write6.csv','w', newline='')
-f = open('/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/write/write49.csv','w', newline='')
+f = open('/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/write/usc sipi/7.2.01.csv','w', newline='')
 wr = csv.writer(f)
 for i in range(0,len(rmcount)):
     wr.writerow([i,rmcount[i]])
