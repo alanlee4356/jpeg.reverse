@@ -954,14 +954,14 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/usc sipi/img1024/7.2.01.tiff'
-# filename = '1.gif'
+# filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/usc sipi/img1024/7.2.01.tiff'
+filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/Baboon.bmp'
 
 
 image = Image.open(filename, 'r')
 #image = img.imread(filename)
 pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
-img_size = 512
+img_size = 256
 k = 0
 l = 0
 istack = []
@@ -1067,8 +1067,8 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 for i in range(63):#AC Run Magnitude 갯수 세보는것
     rmcount.append(rm.count(i))
 
-# plt.hist(rm,bins=23)
-# plt.show()
+plt.hist(rm,bins=24)
+plt.show()
 
 # tuple(rm1)
 # run,mag = zip(*rm1)#튜플 리스트를 스캐터로 시각화 하는방법을 찾아보기
@@ -1081,12 +1081,12 @@ plt.imshow(newimg, cmap=plt.cm.gray)  # 그레이스케일은 cmap=plt.cm.gray�
 plt.show()
 
 # f = open('write/write6.csv','w', newline='')
-f = open('/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/write/usc sipi/7.2.01.csv','w', newline='')
-wr = csv.writer(f)
-for i in range(0,len(rmcount)):
-    wr.writerow([i,rmcount[i]])
+# f = open('/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/write/usc sipi/7.2.01.csv','w', newline='')
+# wr = csv.writer(f)
+# for i in range(0,len(rmcount)):
+#     wr.writerow([i,rmcount[i]])
     
-f.close
+# f.close
 
 
 '''
