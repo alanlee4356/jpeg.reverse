@@ -768,81 +768,6 @@ def replace(encoded_bits, replace_bits, start, length):  # 원본, 변경할비�
     encoded_bits = ''.join(encoded)
     return encoded_bits
 
-def arrange(encoded_bits):
-    index = len(encoded_bits)-4
-    end = len(encoded_bits)
-    while True:
-        if encoded_bits[index:index+4] =='1010':
-            #여기서부터 decoding진행하면됨. 만약에 디코딩이완전하지않으면 하나더 이전 1010으로 진행
-            while index>0:
-                index-=1
-                if encoded_bits[index:index+4] == '1010':
-                    try :
-                        tmp,remain_tmp=decode_dc_huffman(encoded_bits[index+4:end])
-                        decode_ac_huffman(remain_tmp)
-                        print('이 1010은 이전블록의 eob구만')
-                        end = index+4
-                        break
-                    except IndexError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except KeyError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except ValueError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                elif encoded_bits[index:index+4] == '0101':
-                    try :#'0101  11101001110011010 이 디코딩이 잘되는 문제'
-                        tmp,remain_tmp=decode_dc_huffman(encoded_bits[index+4:end])
-                        decode_ac_huffman(remain_tmp)
-                        print('이 0101은 이전블록의 eob구만')
-                        
-                        end = index+4
-                        break
-                    except IndexError:
-                        print('이 0101은 이전블록의 eob가 아니구만')
-                    except KeyError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except ValueError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    
-            
-                
-        elif encoded_bits[index:index+4] =='0101':#지금 여기 오류있음
-            #여기서부터 decoding진행하면됨. 만약에디코딩이 완전하지않으면 하나더 이전 1010으로 진행
-            while index>0:
-                index-=1
-                if encoded_bits[index:index+4] == '1010':
-                    try :
-                        tmp,remain_tmp=decode_dc_huffman(eobflip(encoded_bits[index+4:end]))
-                        decode_ac_huffman(remain_tmp)
-                        print('이 1010은 이전블록의 eob구만')
-                        encoded_bits_tmp = replace(encoded_bits,eobflip(encoded_bits[index+4:end]),index+4,end-index-4)
-                        encoded_bits = encoded_bits_tmp
-                        end = index+4
-                        break
-                    except IndexError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except KeyError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except ValueError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                elif encoded_bits[index:index+4] == '0101':
-                    try :
-                        tmp,remain_tmp=decode_dc_huffman(eobflip(encoded_bits[index+4:end]))
-                        decode_ac_huffman(remain_tmp)
-                        print('이 0101은 이전블록의 eob구만')
-                        encoded_bits_tmp = replace(encoded_bits,eobflip(encoded_bits[index+4:end]),index+4,end-index-4)
-                        encoded_bits = encoded_bits_tmp
-                        end = index+4
-
-                        break
-                    except IndexError:
-                        print('이 0101은 이전블록의 eob가 아니구만')
-                    except KeyError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-                    except ValueError:
-                        print('이 1010은 이전블록의 eob가 아니구만')
-        if end<5:
-            return encoded_bits
 
 def pixel_diff(arr):  # [행,열] 픽셀값 차이 계산
     diff = 0
@@ -923,28 +848,10 @@ def encoding(a1):
 #     return a10
 
 
-# def decoding(a10):  # normal
-#     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
-#     dcvalue(a11)
-#     a12, remain_bits = decode_ac_huffman(remain_bits)
-#     a13 = decode_run_length(a12)
-#     a13[0] = decode_differential(dcval)
-#     a14 = izigzag(a13)
-#     a15 = quantize(a14, True)
-#     a16 = idct2d(a15)
-#     a17 = after_idct(a16)
-
-#     return a17, remain_bits
-
-def decoding(a10):  # reverse decoding
-    
+def decoding(a10):  # normal
     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
     dcvalue(a11)
-    try:
-        a12, remain_bits = decode_ac_huffman(remain_bits)
-    except ValueError:
-        print("1111로 가정한것이 틀렸음 변경된 비트로 다시 실행")
-    # rm1.append(len(a12))
+    a12, remain_bits = decode_ac_huffman(remain_bits)
     a13 = decode_run_length(a12)
     a13[0] = decode_differential(dcval)
     a14 = izigzag(a13)
@@ -953,6 +860,24 @@ def decoding(a10):  # reverse decoding
     a17 = after_idct(a16)
 
     return a17, remain_bits
+
+# def decoding(a10):  # reverse decoding
+    
+#     a11, remain_bits = decode_dc_huffman(a10)  # a11이 dc value
+#     dcvalue(a11)
+#     try:
+#         a12, remain_bits = decode_ac_huffman(remain_bits)
+#     except ValueError:
+#         print("1111로 가정한것이 틀렸음 변경된 비트로 다시 실행")
+#     # rm1.append(len(a12))
+#     a13 = decode_run_length(a12)
+#     a13[0] = decode_differential(dcval)
+#     a14 = izigzag(a13)
+#     a15 = quantize(a14, True)
+#     a16 = idct2d(a15)
+#     a17 = after_idct(a16)
+
+#     return a17, remain_bits
 
 filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
 # filename = '1.gif'
