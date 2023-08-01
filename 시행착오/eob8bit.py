@@ -880,7 +880,7 @@ def decoding(a10):  # normal
 #     return a17, remain_bits
 
 filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
-# filename = '1.gif'
+#filename = '1.gif'
 
 
 image = Image.open(filename, 'r')
