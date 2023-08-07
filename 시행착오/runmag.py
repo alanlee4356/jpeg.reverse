@@ -954,8 +954,8 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
-# filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/Baboon.bmp'
+#filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
 
 
 image = Image.open(filename, 'r')
