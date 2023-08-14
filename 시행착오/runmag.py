@@ -954,14 +954,14 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-#filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
-filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+#filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
 
 
 image = Image.open(filename, 'r')
 #image = img.imread(filename)
 pixel_values = list(image.getdata())  # 얘떄문에 d1_to_d2함수 필요
-img_size = 256
+img_size = 512
 k = 0
 l = 0
 istack = []
