@@ -900,6 +900,8 @@ def encoding(a1):
     size, value = encode_dc(dc_diff[len(dc_diff)-1])
     a7 = encode_dc_huffman(size, value)
     a8 = encode_run_length(tuple(a5)[1:])
+    # if len(a8)>20:
+    #     print('20') #achuffmancode 100 이랑 변환된 eob 100이랑 겹쳐서 문제가 생길수 있는지에대한 확인용 코드
     a9 = encode_ac_huffman(a8)
     # if len(a8)>21:
     
@@ -954,8 +956,8 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
-#filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+#filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
 
 
 image = Image.open(filename, 'r')
