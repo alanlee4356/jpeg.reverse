@@ -956,8 +956,8 @@ def decoding(a10):  # reverse decoding
 
     return a17, remain_bits
 
-#filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
-filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
+filename = '/Users/alanlee/Documents/GitHub/jpeg.reverse/시행착오/img/19.gif'
+#filename = 'C:/Users/dltjd/OneDrive/문서/GitHub/jpeg.reverse/시행착오/img/lena_gray.bmp'
 
 
 image = Image.open(filename, 'r')
@@ -1069,7 +1069,7 @@ length만큼 플립해서 디코딩해보고 1010이 안나오면 2length 3lengt
 for i in range(63):#AC Run Magnitude 갯수 세보는것
     rmcount.append(rm.count(i))
 
-plt.hist(rm,bins=24)
+plt.hist(rm,bins=30)
 plt.show()
 
 # tuple(rm1)
